@@ -170,3 +170,4 @@ Temporary Items
 **/charts/*.tgz
 # Public Keys for JWT Auth
 *.pub
+application.properties
