@@ -1,4 +1,36 @@
-# HAPI-FHIR Starter Project
+# HAPI-FHIR Jwt-Auth Project
+
+This project is a fork from the complete starter project with some custom changes. 
+See original Readme below.
+
+### Project-Changes:
+
+The following changes has been made:
+
+##### Subscription
+
+Subscriptions are essential for the rad-on-fhir project - therefor the `rest` and `websockets` have been enabled by default.
+
+##### JWT
+
+An JWT-Based AuthN and AuthZ has been added to ca.uhn.fhir.jpa.starter.jwt Package.
+You need an RSA Public Key for auth on this server. You can either provice a Path to the File containing the Base64 encoded
+public key in `jwt.publickeyfile` or put the Public Key as Base64-String in the Environment as `JWT_PUBLIC_KEY`
+
+All classes implementing the `ca.uhn.fhir.jpa.starter.jwt.rules.JwtRuleBuilder` Interface will be used to Build the Rules 
+based on the given JWT-Token Payload.
+
+## Run in intellij IDEA
+
+To run the "Application" as Spring boot inside IDEA you need to enable at least the maven profile "boot".
+Do not forget to "refresh" the maven config in IDEA after selecting the profile. Now you can start/debug the project inside
+the IDEA.
+
+#### Java Requirement
+
+If you have Problems compiling the project try the latest SDK (17 or higher, set both 'java' and 'javac' as your system default)
+
+# orifinal README from HAPI-FHIR Starter Project
 
 This project is a complete starter project you can use to deploy a FHIR server using HAPI FHIR JPA.
 
@@ -13,7 +45,7 @@ In order to use this sample, you should have:
 - [This project](https://github.com/hapifhir/hapi-fhir-jpaserver-starter) checked out. You may wish to create a GitHub Fork of the project and check that out instead so that you can customize the project and save the results to GitHub.
 
 ### and either
- - Oracle Java (JDK) installed: Minimum JDK8 or newer.
+ - Oracle Java (JDK) installed: Minimum JDK17 or newer.
  - Apache Maven build tool (newest version)
 
 ### or
