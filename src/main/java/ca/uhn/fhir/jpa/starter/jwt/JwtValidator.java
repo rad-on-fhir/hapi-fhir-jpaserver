@@ -1,5 +1,6 @@
 package ca.uhn.fhir.jpa.starter.jwt;
 
+import ca.uhn.fhir.jpa.starter.jwt.key.PublicKeyProvider;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -25,30 +26,17 @@ import java.util.Locale;
 
 public class JwtValidator {
 
-	private final File publicKeyFile;
 	private final Logger logger = LoggerFactory.getLogger(JwtValidator.class);
 	private final ObjectMapper mapper = new ObjectMapper();
-	private byte[] publicKey;
+	private final PublicKeyProvider provider;
 
-	public JwtValidator(File publicKeyFile) throws IOException {
-		this.publicKeyFile = publicKeyFile;
-		this.refreshPublicKey();
+	public JwtValidator(PublicKeyProvider provider) throws IOException {
+		this.provider = provider;
 	}
 
-	private static byte[] readPublicKey(File publicKeyFile) throws IOException {
-		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-		try (FileInputStream fileInputStream = new FileInputStream(publicKeyFile)) {
-			StreamUtils.copy(fileInputStream, outputStream);
-		}
-		return Base64.decodeBase64(outputStream.toByteArray());
-	}
-
-	private synchronized void refreshPublicKey() throws IOException {
-		this.publicKey = JwtValidator.readPublicKey(publicKeyFile);
-		logger.debug((publicKey != null ? publicKey.length : " NULL ") + " Bytes has been loaded from Public Key from File '" + publicKeyFile.getAbsolutePath());
-	}
 
 	public JwtPayload parseAndValidate(String token) throws JWTVerificationException {
+		final byte[] publicKey = provider.publicKey();
 		if (publicKey == null) throw new RuntimeException("System Error: No Public Key loaded");
 		try {
 			X509EncodedKeySpec keySpec = new X509EncodedKeySpec(publicKey);
