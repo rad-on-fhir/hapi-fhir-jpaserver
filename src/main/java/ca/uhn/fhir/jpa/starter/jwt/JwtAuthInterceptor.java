@@ -14,6 +14,7 @@ import ca.uhn.fhir.rest.server.interceptor.auth.RuleBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -23,6 +24,7 @@ import java.util.List;
 
 @Service
 @Interceptor
+@ConditionalOnProperty(value="jwt.disabled",havingValue="false",matchIfMissing = true)
 public class JwtAuthInterceptor extends AuthorizationInterceptor {
 
 	private final JwtValidator jwtValidator;
