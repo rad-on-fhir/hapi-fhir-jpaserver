@@ -44,21 +44,10 @@ public class MqttInterceptor {
 
 	@Hook(Pointcut.STORAGE_PRECOMMIT_RESOURCE_UPDATED)
 	public void resourceUpdated(IBaseResource theOldResource, IBaseResource theNewResource, RequestDetails theRequest) {
-//		if (!myDaoConfig.isTriggerSubscriptionsForNonVersioningChanges()) {
-//			if (theOldResource != null && theNewResource != null) {
-//				String oldVersion = theOldResource.getIdElement().getVersionIdPart();
-//				String newVersion = theNewResource.getIdElement().getVersionIdPart();
-//				if (isNotBlank(oldVersion) && isNotBlank(newVersion) && oldVersion.equals(newVersion)) {
-//					return;
-//				}
-//			}
-//		}
-
 		sendResourceModified(theNewResource, ResourceModifiedMessage.OperationTypeEnum.UPDATE, theRequest);
 	}
 
 	private void sendResourceModified(IBaseResource theNewResource, BaseResourceMessage.OperationTypeEnum update, RequestDetails theRequest) {
-//		byte[] payload = jsonParser.encodeResourceToString(theNewResource).getBytes(StandardCharsets.UTF_8);
 		try {
 			logger.info("MQTT: start ");
 			IIdType idElement = theNewResource.getIdElement();

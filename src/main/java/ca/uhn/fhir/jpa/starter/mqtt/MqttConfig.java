@@ -28,9 +28,7 @@ public class MqttConfig {
 
 	@Bean
 	public MqttConnection connection() {
-		MqttConnection connection = new MqttConnection(this);
-
-		return connection;
+		return new MqttConnection(this);
 	}
 
 	@Override

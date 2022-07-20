@@ -13,15 +13,13 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class MqttConnection implements MqttCallback, DisposableBean {
 	private static final AtomicInteger THREAD_COUNT = new AtomicInteger();
-	private static final String fota_fetch_record = "fota_fetch_record";
-	private String brokerUrl = null;
-	final private String colon = ":";
+	private final String brokerUrl;
 	final private String clientId = UUID.randomUUID().toString();
 	final int qos;
 
 	private MqttClient mqttClient = null;
-	private MqttConnectOptions connectionOptions = null;
-	private MemoryPersistence persistence = null;
+	private final MqttConnectOptions connectionOptions;
+	private final MemoryPersistence persistence;
 
 	private final Queue<MqttFhirMessage> messageQueue = new LinkedBlockingQueue<>();
 
@@ -29,7 +27,7 @@ public class MqttConnection implements MqttCallback, DisposableBean {
 	private volatile boolean run = true;
 
 	public MqttConnection(MqttConfig config) {
-		this.brokerUrl = (config.useSSL ? config.SSL : config.TCP) + config.host + this.colon + config.port;
+		this.brokerUrl = (config.useSSL ? config.SSL : config.TCP) + config.host + ":" + config.port;
 		this.persistence = new MemoryPersistence();
 		this.qos = config.qos;
 		this.connectionOptions = new MqttConnectOptions();
@@ -101,7 +99,7 @@ public class MqttConnection implements MqttCallback, DisposableBean {
 	}
 
 	@Override
-	public void messageArrived(String s, MqttMessage mqttMessage) throws Exception {
+	public void messageArrived(String s, MqttMessage mqttMessage) {
 		this.logger.info("Got a Message '" + s + "' : " + mqttMessage);
 	}
 
