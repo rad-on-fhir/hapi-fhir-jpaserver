@@ -347,6 +347,13 @@
             <version>4.0.0</version>
         </dependency>
 
+        <!-- MQTT -->
+        <dependency>
+            <groupId>org.eclipse.paho</groupId>
+            <artifactId>org.eclipse.paho.client.mqttv3</artifactId>
+            <version>1.2.5</version>
+        </dependency>
+
 
         <dependency>
             <groupId>org.junit.jupiter</groupId>
