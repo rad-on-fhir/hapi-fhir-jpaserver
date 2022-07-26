@@ -30,6 +30,7 @@ public class MqttInterceptor {
 	public MqttInterceptor(ObjectMapper mapper, MqttConnection connection) {
 		this.mapper = mapper;
 		this.connection = connection;
+		this.logger.warn("Started MqttInterceptor");
 	}
 
 	@Hook(Pointcut.STORAGE_PRECOMMIT_RESOURCE_CREATED)

@@ -20,9 +20,9 @@ public class MqttConfig {
 	@Value("${mqtt.useSSL:false}")
 	Boolean useSSL;
 	@Value("${mqtt.username:}")
-	String userName = "your username";
+	String userName;
 	@Value("${mqtt.password:}")
-	String password = "Password";
+	String password;
 	final String TCP = "tcp://";
 	final String SSL = "ssl://";
 
