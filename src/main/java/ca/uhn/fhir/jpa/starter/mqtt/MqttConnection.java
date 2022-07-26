@@ -75,6 +75,7 @@ public class MqttConnection implements MqttCallback, DisposableBean {
 			this.mqttClient = new MqttClient(brokerUrl, clientId, persistence);
 			this.mqttClient.connect(this.connectionOptions);
 			this.mqttClient.setCallback(this);
+			this.logger.info("Connected to MQTT-Server " + brokerUrl + " as Client " + clientId);
 		} catch (Exception e) {
 			throw new RuntimeException("Could not Connect to Mqtt " + brokerUrl, e);
 		}
