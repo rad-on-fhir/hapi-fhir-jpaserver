@@ -14,9 +14,9 @@ spring:
     check-location: false
     baselineOnMigrate: true
   datasource:
-    url: jdbc:postgresql://hapi-fhir-postgres:5432/hapi
-    username: admin
-    password: admin
+    url: jdbc:postgresql://127.0.0.1:5432/hapi_fhir_jpa
+    username: hapi_fhir_jpa
+    password: null
     driverClassName: org.postgresql.Driver
     max-active: 15
 
@@ -188,3 +188,10 @@ hapi:
 #  protocol: 'http'
 #  schema_management_strategy: CREATE
 #  username: SomeUsername
+# JWT Settings
+jwt:
+  disabled: true
+# MQTT Server for Events:
+mqtt:
+  enabled: false
+  host: localhost

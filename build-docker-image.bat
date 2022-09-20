@@ -1,1 +1,1 @@
-docker build -t hapi-fhir/hapi-fhir-jpaserver-starter .
+docker build -t srcblk/rad-on-hapi-fhir-jpaserver:latest .

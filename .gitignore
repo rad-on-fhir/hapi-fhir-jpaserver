@@ -172,3 +172,4 @@ Temporary Items
 *.pub
 application.properties
 h2-database**
+local*
