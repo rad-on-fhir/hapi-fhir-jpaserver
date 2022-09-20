@@ -1,4 +1,4 @@
 #!/bin/sh
 
-docker build -t hapi-fhir/hapi-fhir-jpaserver-starter .
+docker build --tag srcblk/rad-on-hapi-fhir-jpaserver:latest .
 
