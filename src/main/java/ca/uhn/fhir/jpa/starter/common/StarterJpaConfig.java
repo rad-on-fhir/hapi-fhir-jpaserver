@@ -24,7 +24,6 @@ import ca.uhn.fhir.jpa.config.util.ResourceCountCacheUtil;
 import ca.uhn.fhir.jpa.config.util.ValidationSupportConfigUtil;
 import ca.uhn.fhir.jpa.dao.FulltextSearchSvcImpl;
 import ca.uhn.fhir.jpa.dao.IFulltextSearchSvc;
-import ca.uhn.fhir.jpa.dao.mdm.MdmLinkDaoJpaImpl;
 import ca.uhn.fhir.jpa.dao.search.HSearchSortHelperImpl;
 import ca.uhn.fhir.jpa.dao.search.IHSearchSortHelper;
 import ca.uhn.fhir.jpa.delete.ThreadSafeResourceDeleterSvc;
@@ -44,13 +43,11 @@ import ca.uhn.fhir.jpa.starter.AppProperties;
 import ca.uhn.fhir.jpa.starter.annotations.OnCorsPresent;
 import ca.uhn.fhir.jpa.starter.annotations.OnImplementationGuidesPresent;
 import ca.uhn.fhir.jpa.starter.common.validation.IRepositoryValidationInterceptorFactory;
-import ca.uhn.fhir.jpa.starter.ips.IpsConfigCondition;
 import ca.uhn.fhir.jpa.starter.jwt.JwtAuthInterceptor;
 import ca.uhn.fhir.jpa.starter.util.EnvironmentHelper;
 import ca.uhn.fhir.jpa.subscription.util.SubscriptionDebugLogInterceptor;
 import ca.uhn.fhir.jpa.util.ResourceCountCache;
 import ca.uhn.fhir.jpa.validation.JpaValidationSupportChain;
-import ca.uhn.fhir.mdm.dao.IMdmLinkDao;
 import ca.uhn.fhir.mdm.provider.MdmProviderLoader;
 import ca.uhn.fhir.narrative.DefaultThymeleafNarrativeGenerator;
 import ca.uhn.fhir.narrative2.NullNarrativeGenerator;
@@ -81,7 +78,6 @@ import org.springframework.web.cors.CorsConfiguration;
 
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
-
 import java.util.*;
 
 import static ca.uhn.fhir.jpa.starter.common.validation.IRepositoryValidationInterceptorFactory.ENABLE_REPOSITORY_VALIDATING_INTERCEPTOR;
@@ -246,10 +242,28 @@ public class StarterJpaConfig {
 	}
 
 	@Bean
-	public RestfulServer restfulServer(IFhirSystemDao<?, ?> fhirSystemDao, AppProperties appProperties, DaoRegistry daoRegistry, Optional<MdmProviderLoader> mdmProviderProvider, IJpaSystemProvider jpaSystemProvider, ResourceProviderFactory resourceProviderFactory, JpaStorageSettings jpaStorageSettings, ISearchParamRegistry searchParamRegistry, IValidationSupport theValidationSupport, DatabaseBackedPagingProvider databaseBackedPagingProvider, LoggingInterceptor loggingInterceptor, Optional<TerminologyUploaderProvider> terminologyUploaderProvider, Optional<SubscriptionTriggeringProvider> subscriptionTriggeringProvider, Optional<CorsInterceptor> corsInterceptor, IInterceptorBroadcaster interceptorBroadcaster, Optional<BinaryAccessProvider> binaryAccessProvider, BinaryStorageInterceptor binaryStorageInterceptor, IValidatorModule validatorModule, Optional<GraphQLProvider> graphQLProvider, BulkDataExportProvider bulkDataExportProvider, BulkDataImportProvider bulkDataImportProvider, ValueSetOperationProvider theValueSetOperationProvider, ReindexProvider reindexProvider, PartitionManagementProvider partitionManagementProvider, Optional<RepositoryValidatingInterceptor> repositoryValidatingInterceptor, IPackageInstallerSvc packageInstallerSvc, ThreadSafeResourceDeleterSvc theThreadSafeResourceDeleterSvc, ApplicationContext appContext, Optional<IpsOperationProvider> theIpsOperationProvider) {
-	// public RestfulServer restfulServer(IFhirSystemDao<?, ?> fhirSystemDao, AppProperties appProperties, DaoRegistry daoRegistry, Optional<MdmProviderLoader> mdmProviderProvider, IJpaSystemProvider jpaSystemProvider, ResourceProviderFactory resourceProviderFactory, DaoConfig daoConfig, ISearchParamRegistry searchParamRegistry, IValidationSupport theValidationSupport, DatabaseBackedPagingProvider databaseBackedPagingProvider, LoggingInterceptor loggingInterceptor, Optional<TerminologyUploaderProvider> terminologyUploaderProvider, Optional<SubscriptionTriggeringProvider> subscriptionTriggeringProvider, Optional<CorsInterceptor> corsInterceptor, IInterceptorBroadcaster interceptorBroadcaster, Optional<BinaryAccessProvider> binaryAccessProvider, BinaryStorageInterceptor binaryStorageInterceptor, IValidatorModule validatorModule, Optional<GraphQLProvider> graphQLProvider, BulkDataExportProvider bulkDataExportProvider, BulkDataImportProvider bulkDataImportProvider, ValueSetOperationProvider theValueSetOperationProvider, ReindexProvider reindexProvider, PartitionManagementProvider partitionManagementProvider, Optional<RepositoryValidatingInterceptor> repositoryValidatingInterceptor, IPackageInstallerSvc packageInstallerSvc, ThreadSafeResourceDeleterSvc theThreadSafeResourceDeleterSvc, ApplicationContext appContext, Optional<IpsOperationProvider> theIpsOperationProvider, Optional<JwtAuthInterceptor> jwtAuthInterceptor) {
+	public RestfulServer restfulServer(
+		IFhirSystemDao<?, ?> fhirSystemDao, AppProperties appProperties, DaoRegistry daoRegistry,
+		Optional<MdmProviderLoader> mdmProviderProvider, IJpaSystemProvider jpaSystemProvider,
+		ResourceProviderFactory resourceProviderFactory, JpaStorageSettings jpaStorageSettings,
+		ISearchParamRegistry searchParamRegistry, IValidationSupport theValidationSupport,
+		DatabaseBackedPagingProvider databaseBackedPagingProvider,
+		LoggingInterceptor loggingInterceptor, Optional<TerminologyUploaderProvider> terminologyUploaderProvider,
+		Optional<SubscriptionTriggeringProvider> subscriptionTriggeringProvider,
+		Optional<CorsInterceptor> corsInterceptor, IInterceptorBroadcaster interceptorBroadcaster,
+		Optional<BinaryAccessProvider> binaryAccessProvider, BinaryStorageInterceptor binaryStorageInterceptor,
+		IValidatorModule validatorModule, Optional<GraphQLProvider> graphQLProvider,
+		BulkDataExportProvider bulkDataExportProvider, BulkDataImportProvider bulkDataImportProvider,
+		ValueSetOperationProvider theValueSetOperationProvider, ReindexProvider reindexProvider,
+		PartitionManagementProvider partitionManagementProvider,
+		Optional<RepositoryValidatingInterceptor> repositoryValidatingInterceptor,
+		IPackageInstallerSvc packageInstallerSvc,
+		ThreadSafeResourceDeleterSvc theThreadSafeResourceDeleterSvc,
+		ApplicationContext appContext,
+		Optional<IpsOperationProvider> theIpsOperationProvider,
+		Optional<JwtAuthInterceptor> jwtAuthInterceptor
+	) {
 		RestfulServer fhirServer = new RestfulServer(fhirSystemDao.getContext());
-
 		List<String> supportedResourceTypes = appProperties.getSupported_resource_types();
 
 		if (!supportedResourceTypes.isEmpty()) {

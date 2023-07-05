@@ -12,9 +12,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.StreamUtils;
 
-import java.io.*;
+import java.io.IOException;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
@@ -66,7 +65,7 @@ public class JwtValidator {
 	public JwtPayload createPayload(String base64Payload) {
 		JsonNode node = null;
 		try {
-			node = mapper.readTree(net.iharder.Base64.decode(base64Payload));
+			node = mapper.readTree(Base64.decodeBase64(base64Payload));
 			String issuer = "";
 			String subject = "";
 			String id = "";
