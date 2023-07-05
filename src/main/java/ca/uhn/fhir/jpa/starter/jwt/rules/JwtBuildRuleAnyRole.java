@@ -21,7 +21,7 @@ public class JwtBuildRuleAnyRole implements JwtRuleBuilder {
 	@Override
 	public void addRules(RuleBuilder builder, JwtPayload jwtPayload) throws Exception {
 		for (String role : jwtPayload.getRoles()) {
-			if (role.startsWith("FHIR_")) {
+			if (role.toUpperCase().startsWith("PINK.")) {
 				builder.allowAll();
 				return;
 			}
