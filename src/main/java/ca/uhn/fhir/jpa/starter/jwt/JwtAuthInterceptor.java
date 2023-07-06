@@ -43,7 +43,7 @@ public class JwtAuthInterceptor extends AuthorizationInterceptor {
 	@Hook(Pointcut.SERVER_INCOMING_REQUEST_POST_PROCESSED)
 	public boolean incomingRequestPostProcessed(RequestDetails theRequestDetails, HttpServletRequest theRequest, HttpServletResponse theResponse) throws AuthenticationException {
 		String authHeader = theRequestDetails.getHeader("Authorization");
-		logger.info("Got Request with Auth Header " + authHeader);
+
 
 		// The format of the header must be:
 		// Authorization: Bearer [jwt-Token]
