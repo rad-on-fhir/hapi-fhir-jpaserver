@@ -1,22 +1,17 @@
-package ca.uhn.fhir.jpa.starter.jwt;
+package ca.uhn.fhir.jpa.starter.jwt.key;
 
-import ca.uhn.fhir.jpa.starter.jwt.key.JwtEnvironmentKeyProvider;
-import ca.uhn.fhir.jpa.starter.jwt.key.JwtKeyFileProvider;
-import ca.uhn.fhir.jpa.starter.jwt.key.PublicKeyProvider;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 
 import java.io.File;
 
 @Configuration
-@ConditionalOnProperty(value="jwt.disabled",havingValue="false",matchIfMissing = true)
+@ConditionalOnProperty(value="jwt.mode",havingValue="publickey")
 public class JwtPublicKeyConfig {
 
 	@Bean
-	@Primary
 	public PublicKeyProvider publicKeyProvider(@Value("${jwt.publickeyfile:}") String publicKeyFilePath) {
 		final PublicKeyProvider provider;
 		if (publicKeyFilePath != null && !publicKeyFilePath.isBlank()) {
@@ -29,5 +24,6 @@ public class JwtPublicKeyConfig {
 		}
 		return provider;
 	}
+
 
 }

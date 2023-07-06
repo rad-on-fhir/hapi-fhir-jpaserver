@@ -2,9 +2,9 @@ package ca.uhn.fhir.jpa.starter.jwt;
 
 import ca.uhn.fhir.i18n.Msg;
 import ca.uhn.fhir.interceptor.api.Hook;
+import ca.uhn.fhir.interceptor.api.IInterceptorService;
 import ca.uhn.fhir.interceptor.api.Interceptor;
 import ca.uhn.fhir.interceptor.api.Pointcut;
-import ca.uhn.fhir.jpa.starter.jwt.key.PublicKeyProvider;
 import ca.uhn.fhir.jpa.starter.jwt.rules.JwtRuleBuilder;
 import ca.uhn.fhir.rest.api.server.RequestDetails;
 import ca.uhn.fhir.rest.server.exceptions.AuthenticationException;
@@ -33,15 +33,17 @@ public class JwtAuthInterceptor extends AuthorizationInterceptor {
 	private final List<JwtRuleBuilder> ruleBuilders;
 
 	@Autowired
-	public JwtAuthInterceptor(PublicKeyProvider provider, List<JwtRuleBuilder> ruleBuilders) throws IOException {
+	public JwtAuthInterceptor(JwtValidator validator, List<JwtRuleBuilder> ruleBuilders,  IInterceptorService service) throws IOException {
 		this.ruleBuilders = ruleBuilders;
-		jwtValidator = new JwtValidator(provider);
-		logger.info("JwtInterceptor initiated with Provider " + provider);
+		this.jwtValidator = validator;
+		this.logger.info("JwtInterceptor initiated with Validator " + validator);
+		service.registerInterceptor(this);
 	}
 
 	@Hook(Pointcut.SERVER_INCOMING_REQUEST_POST_PROCESSED)
 	public boolean incomingRequestPostProcessed(RequestDetails theRequestDetails, HttpServletRequest theRequest, HttpServletResponse theResponse) throws AuthenticationException {
 		String authHeader = theRequestDetails.getHeader("Authorization");
+		logger.info("Got Request with Auth Header " + authHeader);
 
 		// The format of the header must be:
 		// Authorization: Bearer [jwt-Token]
@@ -78,8 +80,8 @@ public class JwtAuthInterceptor extends AuthorizationInterceptor {
 				return builder.build();
 			}
 		}
-
-		return builder
-			.build();
+		List<IAuthRule> build = builder.build();
+		logger.info("Rule List has been Build with " + build.size()	 + " Entries.");
+		return build;
 	}
 }

@@ -1,6 +1,11 @@
 package ca.uhn.fhir.jpa.starter.jwt;
 
-import java.util.*;
+import com.fasterxml.jackson.databind.JsonNode;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.HashSet;
+import java.util.Locale;
+import java.util.Set;
 
 public class JwtPayload  {
 	private final String email;
@@ -26,7 +31,81 @@ public class JwtPayload  {
 		this.roles = roles;
 	}
 
-	public String getIssuer() {
+    @NotNull
+    public static JwtPayload generateFromJsonNode(JsonNode node) {
+        String issuer = "";
+        String subject = "";
+        String id = "";
+        String name = "";
+        String preferred_username = "";
+        String givenName = "";
+        String familyName = "";
+        String email = "";
+        if (node.has("iss")) {
+            issuer = node.get("iss").asText();
+        }
+        if (node.has("sub")) {
+            subject = node.get("sub").asText();
+        }
+        if (node.has("sid")) {
+            id = node.get("sid").asText();
+        }
+
+        if (node.has("name")) {
+            name = node.get("name").asText();
+        }
+        if (node.has("preferred_username")) {
+            preferred_username = node.get("preferred_username").asText();
+        }
+        if (node.has("given_name")) {
+            givenName = node.get("given_name").asText();
+        }
+        if (node.has("family_name")) {
+            familyName = node.get("family_name").asText();
+        }
+        if (node.has("email")) {
+            email = node.get("email").asText();
+        }
+        final HashSet<String> roles = new HashSet<>();
+
+        if (node.has("realm_access")
+            && node.get("realm_access").has("roles")
+            && node.get("realm_access").get("roles").isArray()) {
+            node.get("realm_access").get("roles").forEach(roleNode -> {
+                String e = roleNode.asText();
+                if (e != null) {
+                    roles.add(e.toUpperCase(Locale.ROOT));
+                }
+            });
+        }
+
+        if (node.has("resource_access")) {
+            node.get("resource_access").forEach(resourceNode -> {
+                if (resourceNode.has("roles") && resourceNode.get("roles").isArray()) {
+                    resourceNode.get("roles").forEach(roleNode -> {
+                        String e = roleNode.asText();
+                        if (e != null) {
+                            roles.add(e.toUpperCase(Locale.ROOT));
+                        }
+                    });
+                }
+            });
+        }
+
+        return new JwtPayload(
+            email,
+            familyName,
+            givenName,
+            issuer,
+            subject,
+            id,
+            name,
+            preferred_username,
+            roles
+        );
+    }
+
+    public String getIssuer() {
 		return issuer;
 	}
 
