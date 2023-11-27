@@ -1,7 +1,6 @@
 package ca.uhn.fhir.jpa.starter.mqtt;
 
 import ca.uhn.fhir.interceptor.api.Hook;
-import ca.uhn.fhir.interceptor.api.IInterceptorService;
 import ca.uhn.fhir.interceptor.api.Interceptor;
 import ca.uhn.fhir.interceptor.api.Pointcut;
 import ca.uhn.fhir.jpa.subscription.model.ResourceModifiedMessage;
@@ -14,30 +13,21 @@ import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.instance.model.api.IIdType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
-import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Field;
 import java.util.*;
 
-@Service
 @Interceptor
-@ConditionalOnBean(
-	value = MqttConnection.class
-)
 public class MqttInterceptor {
 	private final Logger logger = LoggerFactory.getLogger(MqttInterceptor.class);
 	private final ObjectMapper mapper;
 
 	private final MqttConnection connection;
 
-	@Autowired
-	public MqttInterceptor(ObjectMapper mapper, MqttConnection connection, IInterceptorService service) {
+	public MqttInterceptor(ObjectMapper mapper, MqttConnection connection) {
 		this.mapper = mapper;
 		this.connection = connection;
 		this.logger.warn("Started MqttInterceptor");
-		service.registerInterceptor(this);
 	}
 
 	@Hook(Pointcut.STORAGE_PRECOMMIT_RESOURCE_CREATED)

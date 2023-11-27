@@ -12,20 +12,14 @@ import org.jose4j.jwt.consumer.JwtContext;
 import org.jose4j.keys.resolvers.HttpsJwksVerificationKeyResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
-import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
-@Component
-@ConditionalOnBean(JwksConfig.class)
 public class JwksValidator implements JwtValidator {
 	private final JwtConsumer jwtConsumer;
 	private final ObjectMapper mapper;
 	private final Logger logger = LoggerFactory.getLogger(JwksValidator.class);
 
-	@Autowired
 	public JwksValidator(JwksConfig jwksConfig, ObjectMapper mapper) {
 		this.mapper = mapper;
 		HttpsJwks httpsJkws = new HttpsJwks(jwksConfig.getJwksUrl());

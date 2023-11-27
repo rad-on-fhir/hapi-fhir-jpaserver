@@ -17,7 +17,7 @@ public class JwksConfig {
 		@Value("${jwt.jwks.audience:}") String audience
 	) {
 		this.issuerUrl = issuerUrl.isEmpty() ? System.getenv("JWT_JWKS_URL") : issuerUrl;
-		if (this.issuerUrl.isBlank()) {
+		if (this.issuerUrl == null || this.issuerUrl.isBlank()) {
 			throw new IllegalArgumentException("No valid JWKS-Issuer URL given. Please provide jwt.jwks.url via Properties or Environment JWT_JWKS_URL");
 		}
 		this.jwksUrl = this.issuerUrl + (this.issuerUrl.endsWith("/")?"":"/") + "protocol/openid-connect/certs";

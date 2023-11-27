@@ -11,8 +11,6 @@ import org.jose4j.jwt.consumer.JwtConsumerBuilder;
 import org.jose4j.jwt.consumer.JwtContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
-import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.security.KeyFactory;
@@ -22,8 +20,6 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.regex.Pattern;
 
-@Component
-@ConditionalOnBean(PublicKeyProvider.class)
 public class JwtPublicKeyValidator implements JwtValidator {
 
 	private final Logger logger = LoggerFactory.getLogger(JwtPublicKeyValidator.class);
