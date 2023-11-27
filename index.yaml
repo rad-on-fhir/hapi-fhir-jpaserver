@@ -5,6 +5,37 @@ entries:
       artifacthub.io/changes: |
         # When using the list of objects option the valid supported kinds are
         # added, changed, deprecated, removed, fixed, and security.
+        - kind: added
+          description: updated starter image to 6.8.3
+        - kind: fixed
+          description: incorrect handling of existing secret database config
+        - kind: added
+          description: support for using a non-admin user for the postgres database
+        - kind: added
+          description: ability to create a dedicated ServiceAccount
+      artifacthub.io/license: Apache-2.0
+    apiVersion: v2
+    appVersion: 6.8.3
+    created: "2023-11-27T13:45:06.567334738Z"
+    dependencies:
+    - condition: postgresql.enabled
+      name: postgresql
+      repository: oci://registry-1.docker.io/bitnamicharts
+      version: 12.5.6
+    description: A Helm chart for deploying the HAPI FHIR JPA server starter on Kubernetes.
+    digest: 636e9f5e4289d703184e8c230c552d18b26c3f9d65c7d8a7cf01948c99bb89bd
+    home: https://github.com/hapifhir/hapi-fhir-jpaserver-starter
+    name: hapi-fhir-jpaserver
+    sources:
+    - https://github.com/hapifhir/hapi-fhir-jpaserver-starter
+    type: application
+    urls:
+    - https://github.com/rad-on-fhir/hapi-fhir-jpaserver/releases/download/helm-v0.14.0/hapi-fhir-jpaserver-0.14.0.tgz
+    version: 0.14.0
+  - annotations:
+      artifacthub.io/changes: |
+        # When using the list of objects option the valid supported kinds are
+        # added, changed, deprecated, removed, fixed, and security.
         - kind: changed
           description: updated HAPI FHIR JPA Server app image version to v6.6.0
         - kind: changed
@@ -169,4 +200,4 @@ entries:
     urls:
     - https://github.com/hapifhir/hapi-fhir-jpaserver-starter/releases/download/helm-v0.6.0/hapi-fhir-jpaserver-0.6.0.tgz
     version: 0.6.0
-generated: "2023-07-05T09:04:35.823991799Z"
+generated: "2023-11-27T13:45:06.567362399Z"
