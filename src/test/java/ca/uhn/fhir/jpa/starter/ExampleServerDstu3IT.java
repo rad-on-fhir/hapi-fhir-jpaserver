@@ -1,6 +1,7 @@
 package ca.uhn.fhir.jpa.starter;
 
 import ca.uhn.fhir.context.FhirContext;
+import ca.uhn.fhir.cr.config.RepositoryConfig;
 import ca.uhn.fhir.jpa.api.dao.DaoRegistry;
 import ca.uhn.fhir.model.primitive.IdDt;
 import ca.uhn.fhir.rest.api.CacheControlDirective;
@@ -38,8 +39,14 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(SpringExtension.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = {Application.class, JpaStarterWebsocketDispatcherConfig.class}, properties =
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+	classes = {
+		Application.class,
+		JpaStarterWebsocketDispatcherConfig.class,
+		RepositoryConfig.class
+	}, properties =
   {
+	  "spring.profiles.include=storageSettingsTest",
      "spring.datasource.url=jdbc:h2:mem:dbr3",
      "hapi.fhir.cr_enabled=true",
      "hapi.fhir.fhir_version=dstu3",
@@ -49,7 +56,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
   })
 
 
-public class ExampleServerDstu3IT implements IServerSupport {
+class ExampleServerDstu3IT implements IServerSupport {
 
   private static final org.slf4j.Logger ourLog = org.slf4j.LoggerFactory.getLogger(ExampleServerDstu2IT.class);
   private IGenericClient ourClient;
@@ -71,8 +78,8 @@ public class ExampleServerDstu3IT implements IServerSupport {
     ourClient.registerInterceptor(new LoggingInterceptor(true));
   }
 
-    @Test
-  public void testCreateAndRead() {
+  @Test
+  void testCreateAndRead() {
 
     String methodName = "testCreateResourceConditional";
 
@@ -154,7 +161,7 @@ public class ExampleServerDstu3IT implements IServerSupport {
   }
 
   @Test
-  public void testWebsocketSubscription() throws Exception {
+  void testWebsocketSubscription() throws Exception {
     /*
      * Create subscription
      */

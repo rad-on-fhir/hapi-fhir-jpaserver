@@ -9,10 +9,8 @@ import ca.uhn.fhir.jpa.model.config.PartitionSettings.CrossPartitionReferenceMod
 import ca.uhn.fhir.jpa.model.entity.StorageSettings;
 import ca.uhn.fhir.jpa.starter.AppProperties;
 import ca.uhn.fhir.jpa.starter.util.JpaHibernatePropertiesProvider;
-import ca.uhn.fhir.jpa.subscription.channel.subscription.SubscriptionDeliveryHandlerFactory;
 import ca.uhn.fhir.jpa.subscription.match.deliver.email.EmailSenderImpl;
 import ca.uhn.fhir.jpa.subscription.match.deliver.email.IEmailSender;
-import ca.uhn.fhir.rest.server.mail.IMailSvc;
 import ca.uhn.fhir.rest.server.mail.MailConfig;
 import ca.uhn.fhir.rest.server.mail.MailSvc;
 import com.google.common.base.Strings;
@@ -26,8 +24,6 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import java.util.HashSet;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -49,6 +45,7 @@ public class FhirServerConfigCommon {
     ourLog.info("Server configured to " + (appProperties.getExpunge_enabled() ? "enable" : "disable") + " expunges");
     ourLog.info("Server configured to " + (appProperties.getAllow_override_default_search_params() ? "allow" : "deny") + " overriding default search params");
     ourLog.info("Server configured to " + (appProperties.getAuto_create_placeholder_reference_targets() ? "allow" : "disable") + " auto-creating placeholder references");
+    ourLog.info("Server configured to auto-version references at paths {}", appProperties.getAuto_version_reference_at_paths());
 
     if (appProperties.getSubscription().getEmail() != null) {
       AppProperties.Subscription.Email email = appProperties.getSubscription().getEmail();
@@ -84,8 +81,9 @@ public class FhirServerConfigCommon {
   public JpaStorageSettings jpaStorageSettings(AppProperties appProperties) {
     JpaStorageSettings jpaStorageSettings = new JpaStorageSettings();
 
-    jpaStorageSettings.setIndexMissingFields(appProperties.getEnable_index_missing_fields() ? JpaStorageSettings.IndexEnabledEnum.ENABLED : JpaStorageSettings.IndexEnabledEnum.DISABLED);
+    jpaStorageSettings.setIndexMissingFields(appProperties.getEnable_index_missing_fields() ? StorageSettings.IndexEnabledEnum.ENABLED : StorageSettings.IndexEnabledEnum.DISABLED);
     jpaStorageSettings.setAutoCreatePlaceholderReferenceTargets(appProperties.getAuto_create_placeholder_reference_targets());
+    jpaStorageSettings.setAutoVersionReferenceAtPaths(appProperties.getAuto_version_reference_at_paths());
     jpaStorageSettings.setEnforceReferentialIntegrityOnWrite(appProperties.getEnforce_referential_integrity_on_write());
     jpaStorageSettings.setEnforceReferentialIntegrityOnDelete(appProperties.getEnforce_referential_integrity_on_delete());
     jpaStorageSettings.setAllowContainsSearches(appProperties.getAllow_contains_searches());
@@ -127,9 +125,9 @@ public class FhirServerConfigCommon {
 
     jpaStorageSettings.setFilterParameterEnabled(appProperties.getFilter_search_enabled());
 	 jpaStorageSettings.setAdvancedHSearchIndexing(appProperties.getAdvanced_lucene_indexing());
-	 jpaStorageSettings.setTreatBaseUrlsAsLocal(new HashSet<>(appProperties.getLocal_base_urls()));
+	 jpaStorageSettings.setTreatBaseUrlsAsLocal(appProperties.getLocal_base_urls());
 
-	      if (appProperties.getLastn_enabled()) {
+	 if (appProperties.getLastn_enabled()) {
       jpaStorageSettings.setLastNEnabled(true);
     }
 
@@ -222,21 +220,23 @@ public class FhirServerConfigCommon {
   @Bean
   public IEmailSender emailSender(AppProperties appProperties) {
 	  if (appProperties.getSubscription() != null && appProperties.getSubscription().getEmail() != null) {
-		  MailConfig mailConfig = new MailConfig();
 
-		  AppProperties.Subscription.Email email = appProperties.getSubscription().getEmail();
-		  mailConfig.setSmtpHostname(email.getHost());
-		  mailConfig.setSmtpPort(email.getPort());
-		  mailConfig.setSmtpUsername(email.getUsername());
-		  mailConfig.setSmtpPassword(email.getPassword());
-		  mailConfig.setSmtpUseStartTLS(email.getStartTlsEnable());
-
-		  IMailSvc mailSvc = new MailSvc(mailConfig);
-		  IEmailSender emailSender = new EmailSenderImpl(mailSvc);
-
-		  return emailSender;
+          return buildEmailSender(appProperties.getSubscription().getEmail());
 	  }
 
-	  return null;
+	  // Return a dummy anonymous function instead of null. Spring does not like null beans.
+	  // TODO Get the signature of ca.uhn.fhir.jpa.subscription.channel.subscription.SubscriptionDeliveryHandlerFactory
+	  //  changed so it does not require an instance of an IEmailSender
+	  return theDetails -> {};
   }
+
+	private static IEmailSender buildEmailSender(AppProperties.Subscription.Email email) {
+
+		return new EmailSenderImpl(new MailSvc(new MailConfig()
+			.setSmtpHostname(email.getHost())
+			.setSmtpPort(email.getPort())
+			.setSmtpUsername(email.getUsername())
+			.setSmtpPassword(email.getPassword())
+			.setSmtpUseStartTLS(email.getStartTlsEnable())));
+	}
 }
