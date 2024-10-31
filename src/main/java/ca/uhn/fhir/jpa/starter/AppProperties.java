@@ -3,6 +3,7 @@ package ca.uhn.fhir.jpa.starter;
 
 import ca.uhn.fhir.context.FhirVersionEnum;
 import ca.uhn.fhir.jpa.api.config.JpaStorageSettings.ClientIdStrategyEnum;
+import ca.uhn.fhir.jpa.api.config.JpaStorageSettings.IdStrategyEnum;
 import ca.uhn.fhir.jpa.model.entity.NormalizedQuantitySearchLevel;
 import ca.uhn.fhir.jpa.packages.PackageInstallationSpec;
 import ca.uhn.fhir.rest.api.EncodingEnum;
@@ -36,7 +37,9 @@ public class AppProperties {
   private Boolean allow_multiple_delete = false;
   private Boolean allow_override_default_search_params = true;
   private Boolean auto_create_placeholder_reference_targets = false;
+  private Boolean mass_ingestion_mode_enabled = false;
   private final Set<String> auto_version_reference_at_paths = new HashSet<>();
+  private Boolean language_search_parameter_enabled = false;
   private Boolean dao_scheduling_enabled = true;
   private Boolean delete_expunge_enabled = false;
   private Boolean enable_index_missing_fields = false;
@@ -64,6 +67,7 @@ public class AppProperties {
   private EncodingEnum default_encoding = EncodingEnum.JSON;
   private FhirVersionEnum fhir_version = FhirVersionEnum.R4;
   private ClientIdStrategyEnum client_id_strategy = ClientIdStrategyEnum.ALPHANUMERIC;
+  private IdStrategyEnum server_id_strategy = null;
   private List<String> supported_resource_types = new ArrayList<>();
   private List<Bundle.BundleType> allowed_bundle_types = null;
   private Boolean narrative_enabled = true;
@@ -93,15 +97,24 @@ public class AppProperties {
   private Integer bundle_batch_pool_max_size = 100;
   private final Set<String> local_base_urls = new HashSet<>();
   private final Set<String> logical_urls = new HashSet<>();
+  
+  private Boolean resource_dbhistory_enabled = true;
 
   private final List<String> custom_interceptor_classes = new ArrayList<>();
 
+	private final List<String> custom_provider_classes = new ArrayList<>();
+	private Boolean upliftedRefchains_enabled = false;
+
+	private List<Integer> search_prefetch_thresholds = new ArrayList<>();
 
 
 	public List<String> getCustomInterceptorClasses() {
     return custom_interceptor_classes;
   }
 
+	public List<String> getCustomProviderClasses() {
+		return custom_provider_classes;
+	}
 
 
 	public Boolean getOpenapi_enabled() {
@@ -258,7 +271,15 @@ public Cors getCors() {
     this.client_id_strategy = client_id_strategy;
   }
 
-	public boolean getAdvanced_lucene_indexing() {
+  public IdStrategyEnum getServer_id_strategy() {
+    return server_id_strategy;
+  }
+
+  public void setServer_id_strategy(IdStrategyEnum server_id_strategy) {
+    this.server_id_strategy = server_id_strategy;
+  }
+
+  public boolean getAdvanced_lucene_indexing() {
 		return this.advanced_lucene_indexing;
 	}
 
@@ -305,6 +326,14 @@ public Cors getCors() {
   public void setAllow_override_default_search_params(
     Boolean allow_override_default_search_params) {
     this.allow_override_default_search_params = allow_override_default_search_params;
+  }
+
+  public Boolean getMass_ingestion_mode_enabled() {
+    return mass_ingestion_mode_enabled;
+  }
+
+  public void setMass_ingestion_mode_enabled(Boolean mass_ingestion_mode_enabled) {
+    this.mass_ingestion_mode_enabled = mass_ingestion_mode_enabled;
   }
 
   public Boolean getAuto_create_placeholder_reference_targets() {
@@ -609,6 +638,30 @@ public Cors getCors() {
 		this.app_content_path = app_content_path;
 	}
 
+	public Boolean getLanguage_search_parameter_enabled() {
+		return language_search_parameter_enabled;
+	}
+
+	public void setLanguage_search_parameter_enabled(Boolean language_search_parameter_enabled) {
+		this.language_search_parameter_enabled = language_search_parameter_enabled;
+	}
+
+	public List<Integer> getSearch_prefetch_thresholds() {
+		return this.search_prefetch_thresholds;
+	}
+
+	public void  setSearch_prefetch_thresholds(List<Integer> thePrefetchThresholds) {
+		this.search_prefetch_thresholds = thePrefetchThresholds;
+	}
+
+	public boolean getUpliftedRefchains_enabled() {
+		return upliftedRefchains_enabled;
+	}
+
+	public void setUpliftedRefchains_enabled(boolean upliftedRefchains_enabled) {
+		this.upliftedRefchains_enabled = upliftedRefchains_enabled;
+	}
+
 	public static class Cors {
     private Boolean allow_Credentials = true;
     private List<String> allowed_origin = List.of("*");
@@ -880,4 +933,12 @@ public Cors getCors() {
   public void setEnable_index_of_type(boolean enable_index_of_type) {
     this.enable_index_of_type = enable_index_of_type;
   }
+
+public Boolean getResource_dbhistory_enabled() {
+	return resource_dbhistory_enabled;
+}
+
+public void setResource_dbhistory_enabled(Boolean resource_dbhistory_enabled) {
+	this.resource_dbhistory_enabled = resource_dbhistory_enabled;
+}
 }

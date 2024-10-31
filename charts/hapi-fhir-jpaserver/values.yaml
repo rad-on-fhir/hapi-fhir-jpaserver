@@ -7,7 +7,7 @@ image:
   # -- the path inside the repository
   repository: hapiproject/hapi
   # -- the image tag. As of v5.7.0, this is the `distroless` flavor by default, add `-tomcat` to use the Tomcat-based image.
-  tag: "v6.10.1@sha256:4eac1b3481180b028616d1fab7e657e368538063d75f7ed3be2032e34c657dd4"
+  tag: "v7.2.0@sha256:9bcafa8342b572eee248cb7c48c496863d352bbd0347e1d98ea238d09620e89b"
   # -- image pullPolicy to use
   pullPolicy: IfNotPresent
 
@@ -231,9 +231,11 @@ curl:
   image:
     registry: docker.io
     repository: curlimages/curl
-    tag: 8.6.0@sha256:c3b8bee303c6c6beed656cfc921218c529d65aa61114eb9e27c62047a1271b9b
+    tag: 8.9.1@sha256:8addc281f0ea517409209f76832b6ddc2cabc3264feb1ebbec2a2521ffad24e4
 
 tests:
+  # -- whether the service account token should be auto-mounted for the test pods
+  automountServiceAccountToken: false
   # -- configure the test pods resource requests and limits
   resources: {}
   # limits:
